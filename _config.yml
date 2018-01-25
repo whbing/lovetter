@@ -1,0 +1,27 @@
+# Header
+# /archives是默认自带的，其他为自定义
+menu:
+  文章: /archives
+  分类: /archive
+  归档: /general
+  摄影: /gallery
+  其他: /others
+  关于: /about
+
+# Site favicon
+favicon: /favicon.png
+
+# Site logo
+# logo: /avatar.png
+
+# blog_limit_list_num
+limitnum: 2
+
+# Enable Mathjax
+mathjax: true
+
+# Enable awesome-toc
+awesome_toc: true
+
+# Enable githubRepoWidget
+github_repo_widget: false

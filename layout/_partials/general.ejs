@@ -1,0 +1,144 @@
+<%
+var type = 'yearly';//monthly改成yearly
+var style =  'list';
+var showCount =  true;
+var className = 'archive';
+var order =  -1;
+var format = type === 'monthly' ? 'MMMM YYYY' : 'YYYY';//按年分类YYYY
+var posts = site.posts.sort('date', order);
+var data = [];//保存数据
+var length = 0;
+
+posts.forEach(function(post) {
+    // Clone the date object to avoid pollution
+    var date = post.date.clone();  //每一条的时间
+    var data_month = [];           //data_month={month:month,title:title}
+
+    var year = date.year();
+    var month = date.month() + 1;
+    var name = date.format(format);//年份
+    var month_meta = date.format('MM-MM');//按月分类
+    var lastData = data[length - 1]; //获得最后一个年份
+
+    if (!lastData || lastData.name !== name) { //年份不存在或者不等前边一个，就push
+    //新的年份，肯定也有新的月份,将新的月份直接加到mobth_data中
+        length = data.push({   //每push一次，length就会+1
+            name: name,
+            year: year,
+            month: month,
+            month_data:[{
+                m:month,
+                post_list:[{
+                    title:post.title,
+                    month_meta:month_meta,
+                    canonical_path:post.canonical_path
+                }],
+                m_count:1}],
+            count: 1
+            });
+    } else { //由原来的年份，就count+1
+        lastData.count++; //年份的count+1
+        //虽然年份是原来的，月份可能是新的，也要加
+        var lastMonthdata = lastData.month_data[lastData.month_data.length-1];
+        if(!lastMonthdata || lastMonthdata.m !== month){//新的月份
+            lastData.month_data.push({
+                m:month,
+                post_list:[{
+                    title:post.title,
+                    month_meta:month_meta,
+                    canonical_path:post.canonical_path
+                }],
+                m_count:1
+                });
+        }else{//年份相同，月份也相同
+            lastMonthdata.m_count++;//这个是月份中的最后一个月份
+            //同时这条数据也要加入
+            lastMonthdata.post_list.push({
+                title:post.title,
+                month_meta:month_meta,
+                canonical_path:post.canonical_path
+            });
+        }
+    }
+});
+
+var item, i,j,k, len,len2,len3;
+function linkYear(item) {
+    var url = config.archive_dir + '/' + item.year + '/';
+    return url_for(url);
+}
+function linkMonth(item) {
+    var url = config.archive_dir + '/' + item.year + '/';
+    if (item.month < 10) url += '0';
+    url += item.month + '/';
+    return url_for(url);
+}
+function linkMonth(item) {
+    var url = config.archive_dir + '/' + item.year + '/';
+    if (item.month < 10) url += '0';
+    url += item.month + '/';
+    return url_for(url);
+}
+%>
+<!--以下是html-->
+<div id="posts-list" class="posts-collapse">
+    <span class="archive-move-on"></span>
+    <span class="archive-page-counter">
+        目前共计 <%- site.posts.length%> 篇日志
+    </span>
+    <div class="<%- className %>-list-item">
+    <% for (i = 0, len = data.length; i < len; i++) { %>
+        <% item = data[i] %>
+            <!--年份-->
+            <div class="year-wrap">
+                <div class="year">
+                    <span class="collection-title">
+                        <!--<a class="list-year-link" href ="<%= linkYear(item) %>">-->
+                        <a class="list-year-link" href ="javascript:void() ">
+                            <h2><%- item.year %></h2>
+                        </a>
+                        <% if (showCount) { %>
+                        <span class="year-num"> (<%- item.count %>篇)</span>
+                        <% } %>
+                    </span>
+
+                </div>
+                <!--月份-->
+                <div class="month-wrap">
+
+                    <% var this_month = data[i].month_data; %>
+                    <% for (j = 0, len2 = data[i].month_data.length;j < len2; j++) { %>
+
+                        <div class="month">
+                            <h3>
+                                <!--<a class="<%- className %>-list-link" href ="<%= linkMonth(item) %>">-->
+                                <a class="<%- className %>-list-link" href ="javascript:void()">
+                                    <%- this_month[j].m %>月
+                                </a>
+                            </h3>
+                        </div>
+                        <article class="posts-list">
+                        <% for (k = 0, len3 = this_month[j].post_list.length;k < len3; k++) { %>
+                            <div class="article-item">
+                                <h3 class="post-title">
+                                    <a class="<%- className %>-list-link" href="<%= url_for(this_month[j].post_list[k].canonical_path) %>">
+                                        <%- this_month[j].post_list[k].title %>
+                                    </a>
+                                </h3>
+                                <div class="post-meta">
+                                    <time class="post-time" datetime="2017-09-25T09:54:41+08:00" content="2017-09-25">
+                                        <%- this_month[j].post_list[k].month_meta%>
+                                    </time>
+                                </div>
+                            </div>
+                        <% } %>
+                        </article>
+                    <% } %>
+
+                </div>
+
+            </div>
+
+    <% } %>
+    </div>
+</div>

@@ -1,0 +1,102 @@
+<!-- 首页body部分的内容，其实不需要的 -->
+<%
+var title = '';
+
+if (is_category()) {  //用辅助函数检查当前页面是什么页面
+  title = page.category;
+} else if (is_tag()) {
+  title = page.tag;
+} else if (is_month()) {
+  title = page.year + '/' + page.month;
+} else if (is_year()) {
+  title = page.year;
+} 
+
+%>
+
+<% if (type == 'index' || title == '') { %>
+   <!-- do nothing -->
+<% } else if (is_category()) {%>
+  <h1 class="archive-title"><%= __('category_title') %>: <%= title %></h1>
+  <hr class="post-list__divider" />
+<% } else if (is_tag()) { %>
+  <h1 class="archive-title"><%= __('tag_title') %>: <%= title %></h1>
+  <hr class="post-list__divider" />
+<% } else if (is_year() || is_month()) { %>
+  <h1 class="archive-title"><%= __('archive_title') %>: <%= title %></h1>
+  <hr class="post-list__divider" />
+<% } %>
+<!--非pc首页内容-->
+<!--当宽度>1280px时，隐藏-->
+<div class="main-post-list">
+    <ol class="post-list">
+    <% page.posts.each(function(post, i){ %>
+        <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="<%- config.root %><%- post.path %>" title="link to <%= post.title %>"><%= post.title %></a>
+      </h2>
+
+      <div class="post-list__meta">
+                <span title="建立时间" class="post-meta-item-icon">
+                   <i class="fa fa-file-text-o"></i>
+                </span>
+        <time datetime="<%= date(post.date, config.date_format) %>" class="post-list__meta--date date"><%= date(post.date, config.date_format) %></time>
+
+        <span class="post-meta-divider">|</span>
+
+                <span title="更新时间" class="post-meta-item-icon">
+                   <i class="fa fa-file-text"></i>
+                </span>
+        <time datetime="<%= date(post.updated, config.date_format) %>" class="post-list__meta--date date"><%= date(post.updated, config.date_format) %></time>
+
+        <!-- 如果有分类 -->
+        <% if (post.categories && post.categories.length > 0){ %>
+        <span class="post-meta-divider">|</span>
+        <font class="categories">
+                  <span title="分类" class="post-meta-item-icon">
+                    <i class="fa fa-folder-o"></i>
+                  </span>
+          <%- list_categories(post.categories, {
+            show_count: false,
+            class: 'categories',
+            style: 'none'
+          }) %>
+        </font>
+        <% } %>
+
+        <!-- 如果有tags -->
+        <% if (post.tags && post.tags.length > 0){ %>
+        <span class="tag-span">
+            <span class="post-meta-divider">|</span>
+            <span title="标签" class="post-meta-item-icon">
+                <i class="fa fa-tags"></i>
+            </span>
+            <font class="tags">
+              <%- list_tags(post.tags, {
+                show_count: false,
+                style: 'none',
+                class: 'tags'
+          }) %>
+        </font>
+        </span>
+        <% } %>
+
+      </div>
+
+      <div class="excerpt">
+        <% if (post.description) { %>
+          <%- post.description %>
+        <% } else if (post.excerpt) { %>
+          <%- post.excerpt %>
+        <% } %>
+      </div>
+
+      <hr class="post-list__divider" />
+    </li>
+    <% }); %>
+  </ol>
+
+  <%- partial('pagination') %>
+
+</div>

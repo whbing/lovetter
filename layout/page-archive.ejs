@@ -1,0 +1,71 @@
+<%
+var post = page;
+%>
+
+<!--这里是归档的页面-->
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    <!--
+    <h1 class="post-title"><%= post.title %></h1>
+    -->
+    <section id="post-content" class="article-content post">
+        <%- post.content %>
+    </section>
+
+
+  </header>
+
+</article>
+
+<div class="archive-meta">
+
+<% if (site.categories.length){ %>
+    <h3><%= __('categories') %></h3>
+
+    <div class="categorieslist">
+        <% site.categories.sort('name').each(function(item){ %>
+          <% if(item.posts.length){ %>
+            <span><a href="<%- config.root %><%- item.path %>" title="<%= item.name %>"><%= item.name %><sup><%= item.posts.length %></sup></a></span>
+          <% } %>
+        <% }); %>
+     </div>
+<% } %>
+
+<% if (site.tags.length){ %>
+    <h3><%= __('tags') %></h3>
+    <span id="tag-cloud-bt" class="tag-switch tag-cloud-bt">显示标签云</span>
+    <span id="tag-list-bt" class="tag-switch tag-list-bt">显示列表</span>
+
+    <!-- 以列表形式显示 -->
+    <div id ="tag-list" class="tagslist">
+        <% site.tags.sort('posts.length','desc').limit(20).each(function(item){ %>
+            <% if(item.posts.length){ %>
+                <span><a href="<%- config.root %><%- item.path %>" title="<%= item.name %>"><%= item.name %><sup><%= item.posts.length %></sup></a></span>
+            <% } %>
+        <% }); %>
+    </div>
+
+    <!-- 以标签云的形式显示 -->
+    <div id ="tag-cloud" class="tag-cloud-tags">
+        <%- tagcloud({
+            min_font: 14,
+            max_font: 30,
+            amount: 200,
+            color: true,
+            start_color: '#b9a8a8',
+            end_color: '#ff0000'
+        }) %>
+    </div>
+    <% } %>
+<!--
+<% if (site.posts.length){ %>
+    <h3><%= __('archives') %></h3>
+    <div class="archiveslist">
+      <%- list_archives() %>
+    </div>
+<% } %>
+-->
+
+</div>

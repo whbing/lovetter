@@ -1,0 +1,37 @@
+<%
+var post = page;
+%>
+
+<!--这里是归档的页面-->
+<!--
+<article class="post-container post-container--single">
+    <header class="post-header">
+        <h3 class="post-title"><%= post.title %></h3>
+        <br>
+        <section id="post-content" class="article-content post">
+            <%- post.content %>
+        </section>
+    </header>
+</article>
+-->
+
+<div class="archive-meta">
+    <% if (site.posts.length){ %>
+        <!--<h3><%= __('archives') %></h3>-->
+
+        <div class="general-list">
+            <%- partial('_partials/general') %>
+        </div>
+    <% } %>
+
+    <!--
+    <% if (site.posts.length){ %>
+        <% site.posts.sort(config.index_generator.order_by).each(function(item){ %>
+            <div class="collection-title">
+                <h2 class="archive-year motion-element" id="archive-year-<%- date(item.date._d,'YYYY') %>"><%- date(item.date._d,'YYYY') %></h2>
+            </div>
+            <% console.log(item.title) %>
+        <% }); %>
+    <% } %>
+    -->
+</div>
