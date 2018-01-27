@@ -90,7 +90,7 @@ function linkMonth(item) {
     <% for (i = 0, len = data.length; i < len; i++) { %>
         <% item = data[i] %>
             <!--年份-->
-            <div class="year-wrap">
+            <div class="year-wrap year-wrap-<%-item.year %>">
                 <div class="year">
                     <span class="collection-title">
                         <!--<a class="list-year-link" href ="<%= linkYear(item) %>">-->
